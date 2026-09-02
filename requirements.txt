@@ -1,0 +1,17 @@
+langchain
+langgraph
+langchain-mistralai
+langchain-groq
+python-dotenv
+mistralai
+langchain-community
+pypdf
+langchain-huggingface
+langchain-chroma
+chroma
+sentence-transformers
+langchain-Tavily
+fastapi 
+uvicorn[standard] 
+jinja2 
+pip freeze > requirements.txt

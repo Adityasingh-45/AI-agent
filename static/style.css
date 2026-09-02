@@ -1,0 +1,336 @@
+
+/* =========================
+   GLOBAL
+========================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f6f8;
+    height: 100vh;
+}
+
+
+/* =========================
+   APP CONTAINER
+========================= */
+
+.app-container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+.header {
+    height: 70px;
+    background: #111827;
+    color: white;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 30px;
+
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+
+.logo {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+
+.clear-btn {
+    background: #374151;
+    color: white;
+
+    border: none;
+    border-radius: 8px;
+
+    padding: 10px 16px;
+
+    cursor: pointer;
+
+    font-size: 14px;
+}
+
+
+.clear-btn:hover {
+    background: #4b5563;
+}
+
+
+/* =========================
+   CHAT CONTAINER
+========================= */
+
+.chat-container {
+    flex: 1;
+
+    width: 100%;
+    max-width: 900px;
+
+    margin: auto;
+
+    padding: 25px;
+
+    overflow-y: auto;
+}
+
+
+/* =========================
+   MESSAGE
+========================= */
+
+.message {
+    display: flex;
+
+    gap: 12px;
+
+    margin-bottom: 20px;
+
+    align-items: flex-start;
+}
+
+
+.avatar {
+    width: 42px;
+    height: 42px;
+
+    min-width: 42px;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background: #e5e7eb;
+
+    font-size: 20px;
+}
+
+
+/* =========================
+   AI MESSAGE
+========================= */
+
+.ai-message .message-content {
+    background: white;
+
+    color: #111827;
+
+    border-radius: 12px;
+
+    padding: 14px 18px;
+
+    max-width: 75%;
+
+    line-height: 1.6;
+
+    box-shadow:
+        0 2px 8px
+        rgba(0, 0, 0, 0.08);
+
+    white-space: pre-wrap;
+}
+
+
+/* =========================
+   USER MESSAGE
+========================= */
+
+.user-message {
+    flex-direction: row-reverse;
+}
+
+
+.user-message .message-content {
+    background: #2563eb;
+
+    color: white;
+
+    border-radius: 12px;
+
+    padding: 14px 18px;
+
+    max-width: 75%;
+
+    line-height: 1.6;
+
+    white-space: pre-wrap;
+}
+
+
+.user-message .avatar {
+    background: #dbeafe;
+}
+
+
+/* =========================
+   INPUT AREA
+========================= */
+
+.input-area {
+    background: white;
+
+    border-top:
+        1px solid #e5e7eb;
+
+    padding: 20px;
+}
+
+
+.input-box {
+    max-width: 900px;
+
+    margin: auto;
+
+    display: flex;
+
+    align-items: flex-end;
+
+    gap: 10px;
+
+    background: #f3f4f6;
+
+    border-radius: 14px;
+
+    padding: 10px 12px;
+}
+
+
+/* =========================
+   TEXTAREA
+========================= */
+
+textarea {
+    flex: 1;
+
+    border: none;
+
+    outline: none;
+
+    resize: none;
+
+    background: transparent;
+
+    font-size: 16px;
+
+    padding: 10px;
+
+    font-family: inherit;
+
+    max-height: 150px;
+}
+
+
+/* =========================
+   SEND BUTTON
+========================= */
+
+#send-btn {
+    width: 45px;
+    height: 45px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: #2563eb;
+
+    color: white;
+
+    font-size: 20px;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+
+#send-btn:hover {
+    background: #1d4ed8;
+
+    transform: scale(1.05);
+}
+
+
+#send-btn:active {
+    transform: scale(0.95);
+}
+
+
+/* =========================
+   TYPING
+========================= */
+
+.typing {
+    color: #6b7280;
+
+    font-style: italic;
+}
+
+
+/* =========================
+   SCROLLBAR
+========================= */
+
+.chat-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+
+.chat-container::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+
+    border-radius: 10px;
+}
+
+
+/* =========================
+   MOBILE RESPONSIVE
+========================= */
+
+@media (max-width: 600px) {
+
+    .header {
+        padding: 0 15px;
+    }
+
+
+    .logo {
+        font-size: 16px;
+    }
+
+
+    .chat-container {
+        padding: 15px;
+    }
+
+
+    .ai-message .message-content,
+    .user-message .message-content {
+        max-width: 85%;
+    }
+
+
+    .input-area {
+        padding: 12px;
+    }
+
+}

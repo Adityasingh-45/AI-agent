@@ -1,0 +1,390 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Multi Tool AI Agent</title>
+
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+    <div class="app-container">
+
+        <!-- HEADER -->
+        <header class="header">
+
+            <div class="logo">
+                🤖 Multi Tool AI Agent
+            </div>
+
+            <button class="clear-btn" onclick="clearChat()">
+                New Chat
+            </button>
+
+        </header>
+
+
+        <!-- MAIN CHAT AREA -->
+        <main class="chat-container" id="chat-container">
+
+            <!-- WELCOME MESSAGE -->
+            <div class="message ai-message">
+
+                <div class="avatar">
+                    🤖
+                </div>
+
+                <div class="message-content">
+                    <strong>AI Agent</strong>
+
+                    <p>
+                        Hello! 👋 I'm your Multi-Tool AI Agent.
+                        <br><br>
+
+                        I can help you with:
+                        <br>
+                        🎓 AI Tutor<br>
+                        📄 PDF Questions<br>
+                        🌐 Web Search
+                    </p>
+                </div>
+
+            </div>
+
+        </main>
+
+
+        <!-- INPUT AREA -->
+        <div class="input-area">
+
+            <div class="input-box">
+
+                <textarea
+                    id="user-input"
+                    placeholder="Ask anything..."
+                    rows="1"
+                ></textarea>
+
+                <button
+                    id="send-btn"
+                    onclick="sendMessage()"
+                >
+                    ➤
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- JAVASCRIPT -->
+    <script>
+
+        const userInput = document.getElementById("user-input");
+        const chatContainer = document.getElementById("chat-container");
+
+
+        // =========================
+        // SEND MESSAGE
+        // =========================
+
+        async function sendMessage() {
+
+            const message = userInput.value.trim();
+
+
+            if (!message) {
+                return;
+            }
+
+
+            // ADD USER MESSAGE
+
+            addMessage(
+                message,
+                "user"
+            );
+
+
+            // CLEAR INPUT
+
+            userInput.value = "";
+
+
+            // SHOW LOADING
+
+            const loadingId = addLoading();
+
+
+            try {
+
+                // SEND REQUEST TO FASTAPI
+
+                const response = await fetch(
+                    "/chat",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+
+                        body: JSON.stringify({
+                            message: message
+                        })
+                    }
+                );
+
+
+                const data = await response.json();
+
+
+                // REMOVE LOADING
+
+                removeLoading(
+                    loadingId
+                );
+
+
+                // ADD AI RESPONSE
+
+                addMessage(
+                    data.response,
+                    "ai"
+                );
+
+
+            }
+
+            catch (error) {
+
+                removeLoading(
+                    loadingId
+                );
+
+
+                addMessage(
+                    "⚠️ Error connecting to AI Agent.",
+                    "ai"
+                );
+
+
+                console.error(
+                    error
+                );
+
+            }
+
+        }
+
+
+        // =========================
+        // ADD MESSAGE
+        // =========================
+
+        function addMessage(
+            text,
+            sender
+        ) {
+
+            const messageDiv =
+                document.createElement(
+                    "div"
+                );
+
+
+            messageDiv.className =
+                `message ${sender}-message`;
+
+
+            const avatar =
+                document.createElement(
+                    "div"
+                );
+
+
+            avatar.className =
+                "avatar";
+
+
+            avatar.innerHTML =
+                sender === "user"
+                    ? "👤"
+                    : "🤖";
+
+
+            const content =
+                document.createElement(
+                    "div"
+                );
+
+
+            content.className =
+                "message-content";
+
+
+            content.innerText =
+                text;
+
+
+            messageDiv.appendChild(
+                avatar
+            );
+
+
+            messageDiv.appendChild(
+                content
+            );
+
+
+            chatContainer.appendChild(
+                messageDiv
+            );
+
+
+            // AUTO SCROLL
+
+            chatContainer.scrollTop =
+                chatContainer.scrollHeight;
+
+        }
+
+
+        // =========================
+        // LOADING MESSAGE
+        // =========================
+
+        function addLoading() {
+
+            const loadingDiv =
+                document.createElement(
+                    "div"
+                );
+
+
+            const loadingId =
+                "loading-" +
+                Date.now();
+
+
+            loadingDiv.id =
+                loadingId;
+
+
+            loadingDiv.className =
+                "message ai-message";
+
+
+            loadingDiv.innerHTML =
+                `
+                <div class="avatar">
+                    🤖
+                </div>
+
+                <div class="message-content">
+                    <span class="typing">
+                        Thinking...
+                    </span>
+                </div>
+                `;
+
+
+            chatContainer.appendChild(
+                loadingDiv
+            );
+
+
+            chatContainer.scrollTop =
+                chatContainer.scrollHeight;
+
+
+            return loadingId;
+
+        }
+
+
+        // =========================
+        // REMOVE LOADING
+        // =========================
+
+        function removeLoading(
+            loadingId
+        ) {
+
+            const loading =
+                document.getElementById(
+                    loadingId
+                );
+
+
+            if (loading) {
+
+                loading.remove();
+
+            }
+
+        }
+
+
+        // =========================
+        // ENTER TO SEND
+        // =========================
+
+        userInput.addEventListener(
+            "keydown",
+            function (event) {
+
+                if (
+                    event.key === "Enter" &&
+                    !event.shiftKey
+                ) {
+
+                    event.preventDefault();
+
+                    sendMessage();
+
+                }
+
+            }
+        );
+
+
+        // =========================
+        // CLEAR CHAT
+        // =========================
+
+        function clearChat() {
+
+            chatContainer.innerHTML =
+                `
+                <div class="message ai-message">
+
+                    <div class="avatar">
+                        🤖
+                    </div>
+
+                    <div class="message-content">
+
+                        Hello! 👋
+                        How can I help you?
+
+                    </div>
+
+                </div>
+                `;
+
+        }
+
+    </script>
+
+</body>
+
+</html>
+```
