@@ -8,7 +8,6 @@ langchain-community
 pypdf
 langchain-huggingface
 langchain-chroma
-chroma
 sentence-transformers
 langchain-Tavily
 fastapi 

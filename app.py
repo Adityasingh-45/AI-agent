@@ -1,8 +1,7 @@
-
+import os
 from dotenv import load_dotenv
 
 load_dotenv()
-
 
 from pathlib import Path
 
@@ -13,22 +12,12 @@ from fastapi.templating import Jinja2Templates
 
 from pydantic import BaseModel
 
-
 from langchain_mistralai import ChatMistralAI
 
 from langchain_core.messages import (
     HumanMessage,
     ToolMessage
 )
-
-
-# =========================
-# IMPORT TOOLS
-# =========================
-
-from ai_tutor_tool import ai_tutor
-from rag_ai_tool import rag_ai
-from tavily_tool import tavily_ai
 
 
 # =========================
@@ -54,7 +43,7 @@ app = FastAPI(
 app.mount(
     "/static",
     StaticFiles(
-        directory=BASE_DIR / "static"
+        directory=str(BASE_DIR / "static")
     ),
     name="static"
 )
@@ -73,6 +62,15 @@ llm = ChatMistralAI(
     model="mistral-small-2506",
     temperature=0.2
 )
+
+
+# =========================
+# LOAD TOOLS
+# =========================
+
+from ai_tutor_tool import ai_tutor
+from rag_ai_tool import rag_ai
+from tavily_tool import tavily_ai
 
 
 # =========================
@@ -138,6 +136,18 @@ async def home(request: Request):
 
 
 # =========================
+# HEALTH CHECK
+# =========================
+
+@app.get("/health")
+async def health():
+
+    return {
+        "status": "running"
+    }
+
+
+# =========================
 # CHAT API
 # =========================
 
@@ -166,7 +176,9 @@ async def chat(request: ChatRequest):
         )
 
 
+        # -------------------------
         # SAVE AI RESPONSE
+        # -------------------------
 
         messages.append(
             ai_message
@@ -180,7 +192,7 @@ async def chat(request: ChatRequest):
         while ai_message.tool_calls:
 
 
-            # EXECUTE ALL REQUESTED TOOLS
+            # EXECUTE ALL TOOL CALLS
 
             for tool_call in ai_message.tool_calls:
 
@@ -221,7 +233,7 @@ async def chat(request: ChatRequest):
                     )
 
 
-                # ADD TOOL RESULT TO HISTORY
+                # ADD TOOL RESULT
 
                 messages.append(
                     ToolMessage(
@@ -252,7 +264,9 @@ async def chat(request: ChatRequest):
         # =========================
 
         return {
-            "response": str(ai_message.content)
+            "response": str(
+                ai_message.content
+            )
         }
 
 
@@ -263,7 +277,6 @@ async def chat(request: ChatRequest):
             str(e)
         )
 
-
         return {
             "response": (
                 "⚠️ Sorry, something went wrong: "
@@ -273,7 +286,7 @@ async def chat(request: ChatRequest):
 
 
 # =========================
-# RUN APP DIRECTLY
+# RUN LOCALLY
 # =========================
 
 if __name__ == "__main__":
@@ -282,8 +295,11 @@ if __name__ == "__main__":
 
     uvicorn.run(
         "app:app",
-        host="127.0.0.1",
-        port=8000,
-        reload=True
+        host="0.0.0.0",
+        port=int(
+            os.environ.get(
+                "PORT",
+                8000
+            )
+        )
     )
-
